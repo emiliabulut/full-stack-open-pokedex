@@ -48,7 +48,7 @@
   }
 }
 */
-
+// The new  code
 module.exports = {
   env: {
     node: true,
