@@ -33,7 +33,7 @@ jobs:
         if: failure()
         with:
           severity: error
-          details: commit https://github.com/${{ github.repository }}/commit/${{ github.sha }} by {{ github.event.commit.author.name }} broke the build :(
+          details: commit https://github.com/${{ github.repository }}/commit/${{ github.sha }} by ${{ github.event.commit.author.name }} broke the build :(
           description: ''
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Check commit message
@@ -48,7 +48,7 @@ jobs:
         if: steps.deploy.outcome == 'success'
         with:
           severity: info
-          details: A new version of Pokedex deployed to https://full-stack-open-pokedex-m4ec.onrender.com by {{ github.event.commit.author.name }}
+          details: A new version of Pokedex deployed to https://full-stack-open-pokedex-m4ec.onrender.com by ${{ github.event.commit.author.name }}
           description: ''
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
     tag_release:
