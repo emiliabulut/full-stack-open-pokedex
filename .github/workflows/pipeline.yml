@@ -28,17 +28,24 @@ jobs:
         run: npx playwright install
       - name: E2E Test
         run: npm run test:e2e
+      - uses: actions/checkout@v4
+      - name: Check commit message
+        id: check_message
+        run: echo "::set-output name=skip::$(if echo '${{ github.event.head_commit.message }}' | grep -q '#skip'; then echo 'true'; else echo 'false'; fi)"
       - name: Trigger deployment
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check_message.outputs.skip == 'false'
   tag_release:
       needs: [simple_deployment_pipeline]
       runs-on: ubuntu-20.04
       steps:
       - uses: actions/checkout@v4
+      - name: Check commit message
+        id: check_message
+        run: echo "::set-output name=skip::$(if echo '${{ github.event.head_commit.message }}' | grep -q '#skip'; then echo 'true'; else echo 'false'; fi)"
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.64.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check_message.outputs.skip == 'false'
