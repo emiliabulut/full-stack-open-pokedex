@@ -32,6 +32,7 @@ jobs:
         uses: rjstone/discord-webhook-notify@v1
         if: failure()
         with:
+          text: Build failed
           severity: error
           details: commit https://github.com/${{ github.repository }}/commit/${{ github.sha }} by ${{ github.event.commit.author.name }} broke the build :(
           description: ''
@@ -43,10 +44,11 @@ jobs:
         id: deploy
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check_message.outputs.skip == 'false'
-      - name: Test Failure
+      - name: Deployed
         uses: rjstone/discord-webhook-notify@v1
         if: steps.deploy.outcome == 'success'
         with:
+          text: A new version of Pokedex deployed
           severity: info
           details: A new version of Pokedex deployed to https://full-stack-open-pokedex-m4ec.onrender.com by ${{ github.event.commit.author.name }}
           description: ''
